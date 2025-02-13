@@ -9,11 +9,10 @@ app = FastAPI()
 
 hostName = "localhost"
 serverPort = 8080
-url = 'https://evervale.amocrm.ru/api/v4/'
-bearer = 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImp0aSI6ImJmNDgxMTMyOWMwNDA1MmI5YmQ1OGU4MWU0MTYzZmU1ZDg4ZWE3ZDZlODBhNzZlNjY0OWMyYmFiN2VkNTc0ZGI1MDA5OTBmZTI5MGVlMWI5In0.eyJhdWQiOiIyNGVjM2VkMS05ZTk3LTQ3MjItOGZmZC0xMzcxZjlhMTA4ZTAiLCJqdGkiOiJiZjQ4MTEzMjljMDQwNTJiOWJkNThlODFlNDE2M2ZlNWQ4OGVhN2Q2ZTgwYTc2ZTY2NDljMmJhYjdlZDU3NGRiNTAwOTkwZmUyOTBlZTFiOSIsImlhdCI6MTczMTE1OTIyMSwibmJmIjoxNzMxMTU5MjIxLCJleHAiOjE3OTg3NjE2MDAsInN1YiI6IjExMjgyMjU4IiwiZ3JhbnRfdHlwZSI6IiIsImFjY291bnRfaWQiOjMxODUyMzY2LCJiYXNlX2RvbWFpbiI6ImFtb2NybS5ydSIsInZlcnNpb24iOjIsInNjb3BlcyI6WyJjcm0iLCJmaWxlcyIsImZpbGVzX2RlbGV0ZSIsIm5vdGlmaWNhdGlvbnMiLCJwdXNoX25vdGlmaWNhdGlvbnMiXSwiaGFzaF91dWlkIjoiMzk5YzM2YWUtMTkzOC00NDEyLWFiNjktY2ExOGFmN2VhYjYzIiwiYXBpX2RvbWFpbiI6ImFwaS1iLmFtb2NybS5ydSJ9.FKSCBBvEfdiAjF-YKDee8vbWTbp-pXOqzL3bm34Ms5gjAexB7JJBZmmRy1lMM9RVFAGzojimV3qljQ3xBc5whNgzBV3iDXB10niql9ugKqMWFAoPpBcFzmAmq65-YDG2jlXnMVs-csXw0YATqHFVfdppNX6tBCublwJkaXs2n5yPtb5Sl02TRoBNYPRTS5fhtsuUcjJEUYL07AlwllwWtdamyZgaZzpB52HfQ6vcwSR-zjyMdYY2hfY6j64wCerQ8BnfvqiI_1LYx-aKzIRo4Noxyfni8GESqyIYzqBllqcsdcIdvNQ0cRy65hDh7iYk6cR1VDbwMLf8UgnlMaCqpA'
+url = 'https://b24-002xma.bitrix24.ru/rest/1/x2398dglv9p1uk4q/crm.lead.add.json'
+
 headers = {
-  'User-Agent': 'My App v1.0',
-  'Authorization': bearer,
+  'Accept: application/json',
   'Content-Type': 'application/json'
 }
 
@@ -78,25 +77,12 @@ async def get_leads(client, page):
         return None
 
 async def post_lead(client, data):
-    # Убираем пробелы из строки и конвертируем в целое число
-    price_value = int(str(data.price).replace(" ", "")) if data.price else 0  # Убедимся, что price — это int
-    custom_field_value = int(round(data.price * 0.03)) if data.price else 0  # Округляем результат до целого числа
 
     data = {
-       'name': data.name,
-       'price': custom_field_value,  # Здесь цена с пробелами, преобразованная в целое число
-       'responsible_user_id': data.user_id,
-       'pipeline_id': pipeline_id,  # Использование глобальной переменной
-       'custom_fields_values': [
-           {'field_id': 901863, 'values': [{'enum_id': 1637499}]},
-           {'field_id': 840025, 'values': [{'enum_id': 606855}]},
-           {'field_id': 838641, 'values': [{'value': data.link}]},
-           {'field_id': 923969, 'values': [{'value': price_value}]},  # Сюда передаем цену как целое число
-           {'field_id': 923963, 'values': [{'value': data.address}]},
-           # Удалено проблемное поле для проверки ошибки
-           # {'field_id': 897279, 'values': [{'value': data.phone}]},
-           {'field_id': 923965, 'values': [{'value': data.seller}]}
-       ]
+       'fields': {
+              'TITLE': data.name,
+              'ASSIGNED_BY_ID': data.user_id,
+       }
     }
     data = "[" + json.dumps(data) + "]"
     response = await client.post(url + 'leads', headers=headers, data=data)
