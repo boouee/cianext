@@ -12,7 +12,7 @@ serverPort = 8080
 url = 'https://b24-002xma.bitrix24.ru/rest/1/g7hvqhdqpk69goyy/crm.lead.add.json'
 
 headers = {
-  'Accept: application/json',
+  'Accept' : 'application/json',
   'Content-Type': 'application/json'
 }
 
