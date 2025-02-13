@@ -77,17 +77,17 @@ async def get_leads(client, page):
         return None
 
 async def post_lead(client, data):
-
     data = {
        'fields': {
               'TITLE': data.name
        }
     }
+    
     data = "[" + json.dumps(data) + "]"
+    print(data)
     response = await client.post(url, headers=headers, data=data)
     response_content = response.content
     print(f"Response content: {response_content}")
-
     try:
         return response.json()
     except json.JSONDecodeError:
@@ -111,7 +111,6 @@ async def patch_lead(client, data):
     response = await client.patch(url + 'leads', headers=headers, data=data)
     response_content = response.content
     print(f"Response content: {response_content}")
-
     try:
         return response.json()
     except json.JSONDecodeError:
