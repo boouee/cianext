@@ -85,7 +85,7 @@ async def post_lead(client, data):
        }
     }
     data = "[" + json.dumps(data) + "]"
-    response = await client.post(url + 'leads', headers=headers, data=data)
+    response = await client.post(url, headers=headers, data=data)
     response_content = response.content
     print(f"Response content: {response_content}")
 
