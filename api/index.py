@@ -9,7 +9,7 @@ app = FastAPI()
 
 hostName = "localhost"
 serverPort = 8080
-url = 'https://b24-002xma.bitrix24.ru/rest/1/x2398dglv9p1uk4q/crm.lead.add.json'
+url = 'https://b24-002xma.bitrix24.ru/rest/1/g7hvqhdqpk69goyy/crm.lead.add.json'
 
 headers = {
   'Accept: application/json',
@@ -80,8 +80,7 @@ async def post_lead(client, data):
 
     data = {
        'fields': {
-              'TITLE': data.name,
-              'ASSIGNED_BY_ID': data.user_id,
+              'TITLE': data.name
        }
     }
     data = "[" + json.dumps(data) + "]"
