@@ -9,10 +9,10 @@ app = FastAPI()
 
 hostName = "localhost"
 serverPort = 8080
-url = 'https://b24-002xma.bitrix24.ru/rest/1/g7hvqhdqpk69goyy/crm.lead.add.json'
+url = 'https://b24-002xma.bitrix24.ru/rest/1/x2398dglv9p1uk4q/'
 
 headers = {
-  'Accept' : 'application/json',
+  'Accept: application/json',
   'Content-Type': 'application/json'
 }
 
@@ -34,14 +34,12 @@ async def get_body(request: Request):
     return await request.json()
 
 async def get_users(client):
-    response = await client.get(url + 'users', headers=headers)
+    response = await client.post(url + 'user.get', headers=headers)
     response_content = response.content
     print(f"Response content: {response_content}")
-
     if response.status_code != 200:
         print(f"Error: {response.status_code}")
         return None
-
     try:
         return response.json()
     except json.JSONDecodeError:
@@ -49,13 +47,11 @@ async def get_users(client):
         return None
 
 async def check_lead(client, name):
-    response = await client.get(url + 'leads?filter[name]=' + name, headers=headers)
+    response = await client.post(url + 'leads?filter[name]=' + name, headers=headers)
     response_content = response.content
     print(f"Response content: {response_content}")
-
     if response.status_code == 204:
         return response.status_code
-
     try:
         return response.json()
     except json.JSONDecodeError:
@@ -63,13 +59,15 @@ async def check_lead(client, name):
         return None
 
 async def get_leads(client, page):
-    response = await client.get(url + 'leads?page=' + page + '&limit=250', headers=headers)
+    data = {
+       'start' : int(page) * 50 - 50
+    }
+    data = json.dumps(data)
+    response = await client.post(url + 'crm.lead.list', headers=headers, data=data)
     response_content = response.content
     print(f"Response content: {response_content}")
-
     if response.status_code == 204:
         return response.status_code
-
     try:
         return response.json()
     except json.JSONDecodeError:
@@ -79,13 +77,14 @@ async def get_leads(client, page):
 async def post_lead(client, data):
     data = {
        'fields': {
-              'TITLE': data.name
+              'TITLE': data.name,
+              'ASSIGNED_BY_ID': data.user_id,
+                'ADDRESS': data.address,
+                  'PHONE': data.phone,
        }
     }
-    
     data = json.dumps(data)
-    print(data)
-    response = await client.post(url, headers=headers, data=data)
+    response = await client.post(url + 'crm.lead.add.json', headers=headers, data=data)
     response_content = response.content
     print(f"Response content: {response_content}")
     try:
