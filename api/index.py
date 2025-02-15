@@ -34,7 +34,7 @@ async def get_body(request: Request):
     return await request.json()
 
 async def get_users(client):
-    response = await client.post(url + 'user.get', headers=headers)
+    response = await client.post(url + 'user.get.json', headers=headers)
     response_content = response.content
     print(f"Response content: {response_content}")
     if response.status_code != 200:
@@ -47,7 +47,12 @@ async def get_users(client):
         return None
 
 async def check_lead(client, name):
-    response = await client.post(url + 'leads?filter[name]=' + name, headers=headers)
+    data = {
+       'filter'  : {'=TITLE' : name}
+         
+    }
+    data = json.dumps(data)
+    response = await client.post(url + 'crm.lead.list.json', headers=headers, data=data)
     response_content = response.content
     print(f"Response content: {response_content}")
     if response.status_code == 204:
@@ -63,7 +68,7 @@ async def get_leads(client, page):
        'start' : int(page) * 50 - 50
     }
     data = json.dumps(data)
-    response = await client.post(url + 'crm.lead.list', headers=headers, data=data)
+    response = await client.post(url + 'crm.lead.list.json', headers=headers, data=data)
     response_content = response.content
     print(f"Response content: {response_content}")
     if response.status_code == 204:
