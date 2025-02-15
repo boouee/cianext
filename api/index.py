@@ -9,7 +9,7 @@ app = FastAPI()
 
 hostName = "localhost"
 serverPort = 8080
-url = 'https://b24-002xma.bitrix24.ru/rest/1/x2398dglv9p1uk4q/'
+url = 'https://b24-002xma.bitrix24.ru/rest/1/qhakucdx2nbx3d69/'
 
 headers = {
   'Accept' : 'application/json',
