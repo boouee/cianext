@@ -65,7 +65,7 @@ async def check_lead(client, name):
 
 async def get_leads(client, page):
     data = {
-       'start' : int(page) * 50 - 50
+       'start' : 1
     }
     data = json.dumps(data)
     response = await client.post(url + 'crm.lead.list', headers=headers, data=data)
