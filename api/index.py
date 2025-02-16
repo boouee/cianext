@@ -49,7 +49,6 @@ async def get_users(client):
 async def check_lead(client, name):
     data = {
        'filter'  : {'=TITLE' : name}
-         
     }
     data = json.dumps(data)
     response = await client.post(url + 'crm.lead.list.json', headers=headers, data=data)
@@ -63,9 +62,9 @@ async def check_lead(client, name):
         print("Failed to decode JSON response")
         return None
 
-async def get_leads(client, page):
+async def get_leads(client, start):
     data = {
-       'start' : 1
+       'start' : start
     }
     data = json.dumps(data)
     response = await client.post(url + 'crm.lead.list.json', headers=headers, data=data)
@@ -85,7 +84,10 @@ async def post_lead(client, data):
               'TITLE': data.name,
               'ASSIGNED_BY_ID': data.user_id,
                 'ADDRESS': data.address,
-                  'PHONE': data.phone,
+                  'PHONE': [data.phone],
+                    'LINK': [data.link],
+                      'NAME': data.seller, 
+                        'OPPORTUNITY': data.price
        }
     }
     data = json.dumps(data)
@@ -101,18 +103,13 @@ async def post_lead(client, data):
 async def patch_lead(client, data):
     data = {
         'id': data.lead_id,
-        'responsible_user_id': data.user_id,
-        'custom_fields_values': [
-            {'field_id': 897351, 'values': [
-                {
-                    "value": None
-                }
-            ]
-            }  # Установка значения null для поля field_id: 897351
-        ]
+          'fields': {
+              'ASSIGNED_BY_ID': data.user_id,
+                'STATUS_DESCRIPTION': ''
+           }       
     }
-    data = "[" + json.dumps(data) + "]"
-    response = await client.patch(url + 'leads', headers=headers, data=data)
+    data = json.dumps(data)
+    response = await client.patch(url + 'crm.lead.update', headers=headers, data=data)
     response_content = response.content
     print(f"Response content: {response_content}")
     try:
@@ -121,7 +118,7 @@ async def patch_lead(client, data):
         print("Failed to decode JSON response")
         return None
 
-async def task(data, type, lead, page):
+async def task(data, type, lead, start):
     async with httpx.AsyncClient() as client:
         if data and data.lead_id:
             tasks = [patch_lead(client, data)]
@@ -130,7 +127,7 @@ async def task(data, type, lead, page):
         elif type == 'users':
             tasks = [get_users(client) for i in range(1)]
         elif type == 'leads':
-            tasks = [get_leads(client, page) for i in range(1)]
+            tasks = [get_leads(client, start) for i in range(1)]
         elif type == 'filter':
             tasks = [check_lead(client, lead) for i in range(1)]
         result = await asyncio.gather(*tasks)
@@ -146,8 +143,8 @@ async def handle_request(request: Request):
     return output
 
 @app.get('/api')
-async def users(type: str | None = None, lead: str | None = None, page: str | None = None):
-    start = time()
-    output = await task(None, type, lead, page)
-    print("time: ", time() - start)
+async def users(type: str | None = None, lead: str | None = None, start: str | None = None):
+    #start = time()
+    output = await task(None, type, lead, start)
+    #print("time: ", time() - start)
     return output
