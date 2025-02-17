@@ -83,10 +83,11 @@ async def post_lead(client, data):
        'fields': {
               'TITLE': data.name,
               'ASSIGNED_BY_ID': data.user_id,
-                'ADDRESS': data.address,
+              'HAS_PHONE': 'Y',
+                'ADDRESS': data.address.replace('На карте', ''),
                   'PHONE': [data.phone],
                     'LINK': [data.link],
-                      'NAME': data.seller, 
+                      'NAME': data.seller.replace('Автор объявления', ''),
                         'OPPORTUNITY': data.price
        }
     }
