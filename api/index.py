@@ -81,12 +81,12 @@ async def get_leads(client, start):
 async def post_lead(client, data):
     data = {
        'fields': {
-              'TITLE': data.name,
+              'TITLE': data.name.replace('На карте', ''),,
               'ASSIGNED_BY_ID': data.user_id,
               'HAS_PHONE': 'Y',
                 'ADDRESS': data.address.replace('На карте', ''),
-                  'PHONE': [data.phone],
-                    'LINK': [data.link],
+                  'PHONE': [{'VALUE': data.phone}],
+                    'LINK': [{'VALUE': data.link}],
                       'NAME': data.seller.replace('Автор объявления', ''),
                         'OPPORTUNITY': data.price
        }
