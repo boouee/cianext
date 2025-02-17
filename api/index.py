@@ -85,8 +85,8 @@ async def post_lead(client, data):
               'ASSIGNED_BY_ID': data.user_id,
               'HAS_PHONE': 'Y',
                 'ADDRESS': data.address.replace('На карте', ''),
-                  'PHONE': [{'VALUE': data.phone, VALUE_TYPE: "WORK"}],
-                    'WEB': [{'VALUE': data.link, VALUE_TYPE: "WORK"}],
+                  'PHONE': [{'VALUE': data.phone, 'VALUE_TYPE': 'WORK'}],
+                    'WEB': [{'VALUE': data.link, 'VALUE_TYPE': 'WORK'}],
                       'NAME': data.seller.replace('Автор объявления', ''),
                         'OPPORTUNITY': data.price
        }
