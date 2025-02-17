@@ -93,7 +93,7 @@ async def post_lead(client, data):
                         
     }
     data = json.dumps(data)
-    response = await client.post(url + 'crm.deal.add.json', headers=headers, data=data)
+    response = await client.post(url + 'crm.lead.add.json', headers=headers, data=data)
     response_content = response.content
     print(f"Response content: {response_content}")
     try:
