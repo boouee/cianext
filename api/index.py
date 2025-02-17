@@ -87,7 +87,7 @@ async def post_lead(client, data):
                     'WEB': [{'VALUE': 'gthh.com', 'VALUE_TYPE': 'WORK'}],
                       'NAME': data.seller.replace('Автор объявления', ''),
                         'OPPORTUNITY': data.price,
-                        'PHONE': [{'VALUE': string(data.phone), 'VALUE_TYPE': 'WORK'}]
+                        'PHONE': [{'VALUE': str(data.phone), 'VALUE_TYPE': 'WORK'}]
        },
                         
     }
