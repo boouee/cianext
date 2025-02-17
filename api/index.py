@@ -86,9 +86,10 @@ async def post_lead(client, data):
                 'ADDRESS': data.address.replace('На карте', ''),    
                     'WEB': [{'VALUE': data.link, 'VALUE_TYPE': 'WORK'}],
                       'NAME': data.seller.replace('Автор объявления', ''),
-                        'OPPORTUNITY': data.price
-       },
+                        'OPPORTUNITY': data.price,
                         'PHONE': [{'VALUE': '45677', 'VALUE_TYPE': 'WORK'}]
+       },
+                        
     }
     data = json.dumps(data)
     response = await client.post(url + 'crm.lead.add.json', headers=headers, data=data)
