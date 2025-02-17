@@ -83,16 +83,18 @@ async def post_lead(client, data):
        'fields': {
               'TITLE': data.name.replace('На карте', ''),
               'ASSIGNED_BY_ID': data.user_id,
-                'ADDRESS': data.address.replace('На карте', ''),    
-                    'WEB': [{'VALUE': 'gthh.com', 'VALUE_TYPE': 'WORK'}],
-                      'NAME': data.seller.replace('Автор объявления', ''),
+                #'ADDRESS': data.address.replace('На карте', ''),  
+                    'SOURCE_DESCRIPTION':  data.link,  
+                    'ADDITIONAL_INFO': str(data.phone),
+                    #'WEB': [{'VALUE': 'gthh.com', 'VALUE_TYPE': 'WORK'}],
+                      #'NAME': data.seller.replace('Автор объявления', ''),
                         'OPPORTUNITY': data.price,
-                        'PHONE': [{'VALUE': str(data.phone), 'VALUE_TYPE': 'WORK'}]
+                        #'PHONE': [{'VALUE': str(data.phone), 'VALUE_TYPE': 'WORK'}]
        },
                         
     }
     data = json.dumps(data)
-    response = await client.post(url + 'crm.lead.add.json', headers=headers, data=data)
+    response = await client.post(url + 'crm..add.json', headers=headers, data=data)
     response_content = response.content
     print(f"Response content: {response_content}")
     try:
