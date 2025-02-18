@@ -88,7 +88,7 @@ async def post_lead(client, data):
            
                     'UF_CRM_URL': data.link,
                       'NAME': data.seller.replace('Автор объявления', ''),
-                        'OPPORTUNITY': data.price,
+                        'OPPORTUNITY': int(round(data.price * 0.03)),
                         'PHONE': [{'VALUE': str(data.phone), 'VALUE_TYPE': 'WORK'}]
        },
                         
