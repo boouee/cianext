@@ -90,14 +90,14 @@ async def post_lead(client, data):
                 'UF_CRM_PRICE' : data.price,
                  'CATEGORY_ID': 0,
                     'UF_CRM_URL': data.link,
-                      'NAME': data.seller.replace('Автор объявления', ''),
+                      'UF_CRM_SELLER': data.seller.replace('Автор объявления', ''),
                         'OPPORTUNITY': int(round(data.price * 0.03)),
-                        'PHONE': [{'VALUE': str(data.phone), 'VALUE_TYPE': 'WORK'}]
+                        'UF_CRM_PHONE': data.phone
        },
                         
     }
     data = json.dumps(data)
-    response = await client.post(url + 'crm.lead.add.json', headers=headers, data=data)
+    response = await client.post(url + 'crm.deal.add.json', headers=headers, data=data)
     response_content = response.content
     print(f"Response content: {response_content}")
     try:
@@ -115,7 +115,7 @@ async def patch_lead(client, data):
            }       
     }
     data = json.dumps(data)
-    response = await client.patch(url + 'crm.lead.update', headers=headers, data=data)
+    response = await client.patch(url + 'crm.deal.update', headers=headers, data=data)
     response_content = response.content
     print(f"Response content: {response_content}")
     try:
