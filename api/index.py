@@ -9,7 +9,9 @@ app = FastAPI()
 
 hostName = "localhost"
 serverPort = 8080
-url = 'https://b24-002xma.bitrix24.ru/rest/1/ofz3113rxnyv8qfv/'
+#url = 'https://b24-002xma.bitrix24.ru/rest/1/ofz3113rxnyv8qfv/'
+
+url = 'https://b24-mhfw1p.bitrix24.ru/rest/1/etnwm06bccntmdyo/'
 
 headers = {
   'Accept' : 'application/json',
@@ -85,7 +87,8 @@ async def post_lead(client, data):
               'TITLE': data.name.replace('На карте', ''),
               'ASSIGNED_BY_ID': data.user_id,
                 #'ADDRESS': data.address.replace('На карте', ''),  
-           
+                'UF_CRM_PRICE' : data.price,
+                 'CATEGORY_ID': 0,
                     'UF_CRM_URL': data.link,
                       'NAME': data.seller.replace('Автор объявления', ''),
                         'OPPORTUNITY': int(round(data.price * 0.03)),
