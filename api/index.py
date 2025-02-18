@@ -65,7 +65,7 @@ async def check_lead(client, name):
 async def get_leads(client, start):
     data = {
        'start' : start, 
-       'select' : ['TITLE','UF_CRM_URL', 'ASSIGNED_BY_ID', 'COMMENTS', 'DATE_CREATE', 'DATE_MODIFY']
+       'select' : ['TITLE','UF_CRM_URL', 'ASSIGNED_BY_ID', 'COMMENTS', 'DATE_CREATE', 'DATE_MODIFY', 'STAGE_ID']
     }
     data = json.dumps(data)
     response = await client.post(url + 'crm.deal.list.json', headers=headers, data=data)
