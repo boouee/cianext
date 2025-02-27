@@ -13,7 +13,7 @@ import re
 
 app = FastAPI()
 
-hook = 'https://hook.eu2.make.com/qk5rqffp5iphdj0k5v7dbqvr3v5jp3kg'
+#hook = 'https://hook.eu2.make.com/qk5rqffp5iphdj0k5v7dbqvr3v5jp3kg'
 hostName = "localhost"
 serverPort = 8080
 #url = 'https://b24-002xma.bitrix24.ru/rest/1/ofz3113rxnyv8qfv/'
