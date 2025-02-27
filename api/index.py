@@ -15,35 +15,15 @@ import re
 
 app = FastAPI()
 
-imap_ssl_host = 'imap.mail.ru'
-imap_ssl_port = 993
-username = 'dosmtv@mail.ru'
-password = 'M3Eva6YCigJXNt0bZyGc'
+#imap_ssl_host = 'imap.mail.ru'
+#imap_ssl_port = 993
+#username = 'dosmtv@mail.ru'
+#password = 'M3Eva6YCigJXNt0bZyGc'
 
 criteria = {}
 uid_max = 0
 
-def search_string(uid_max, criteria):
-    c = list(map(lambda t: (t[0], '"'+str(t[1])+'"'), criteria.items())) + [('UID', '%d:*' % (uid_max+1))]
-    return '(%s)' % ' '.join(chain(*c))
 
-def check_mail():
-    print('checking started')
-    mail = imaplib.IMAP4_SSL(imap_ssl_host)
-    print(mail.login(username, password))
-    mail.select('inbox')
-    result, data = mail.uid('search', None, search_string(uid_max, criteria))
-    uids = [int(s) for s in data[0].split()]
-    for uid in uids:
-        # Have to check again because Gmail sometimes does not obey UID criterion.
-        if uid > uid_max:
-            result, data = mail.uid('fetch', str(uid), '(RFC822)')
-            for response_part in data:
-                if isinstance(response_part, tuple):
-                    #message_from_string can also be use here
-                    print(email.message_from_bytes(response_part[1])) #processing the email here for whatever
-            uid_max = uid
-    mail.logout()
 
 hostName = "localhost"
 serverPort = 8080
@@ -166,9 +146,9 @@ async def task(data, type, lead, page):
         elif type == 'leads':
             tasks = [get_leads(client, page) for i in range(1)]
         elif type == 'filter':
-            check_mail()
+            print("hello")
         elif type == 'mail':
-            check_mail()
+            print("hello")
         result = await asyncio.gather(*tasks)
         return result
 
