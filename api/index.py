@@ -19,6 +19,24 @@ imap_ssl_port = 993
 username = 'dosmtv@mail.ru'
 password = 'M3Eva6YCigJXNt0bZyGc'
 
+criteria = {}
+uid_max = 0
+
+def search_string(uid_max, criteria):
+    c = list(map(lambda t: (t[0], '"'+str(t[1])+'"'), criteria.items())) + [('UID', '%d:*' % (uid_max+1))]
+    return '(%s)' % ' '.join(chain(*c))
+
+for uid in uids:
+        # Have to check again because Gmail sometimes does not obey UID criterion.
+        if uid > uid_max:
+            result, data = mail.uid('fetch', str(uid), '(RFC822)')
+            for response_part in data:
+                if isinstance(response_part, tuple):
+                    #message_from_string can also be use here
+                    print(email.message_from_bytes(response_part[1])) #processing the email here for whatever
+            uid_max = uid
+mail.logout()
+
 hostName = "localhost"
 serverPort = 8080
 url = 'https://b24-002xma.bitrix24.ru/rest/1/g7hvqhdqpk69goyy/crm.lead.add.json'
