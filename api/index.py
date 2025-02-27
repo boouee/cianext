@@ -6,10 +6,11 @@ import asyncio
 import json
 import time
 from itertools import chain
-import email
 import imaplib
+import email
+from email.header import decode_header
 import base64
-import os
+from bs4 import BeautifulSoup
 import re
 
 app = FastAPI()
@@ -27,8 +28,9 @@ def search_string(uid_max, criteria):
     return '(%s)' % ' '.join(chain(*c))
 
 def check_mail():
+    print('checking started')
     mail = imaplib.IMAP4_SSL(imap_ssl_host)
-    mail.login(username, password)
+    print(mail.login(username, password))
     mail.select('inbox')
     result, data = mail.uid('search', None, search_string(uid_max, criteria))
     uids = [int(s) for s in data[0].split()]
