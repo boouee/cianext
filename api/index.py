@@ -13,6 +13,7 @@ import re
 
 app = FastAPI()
 
+hook = 'https://hook.eu2.make.com/qk5rqffp5iphdj0k5v7dbqvr3v5jp3kg'
 hostName = "localhost"
 serverPort = 8080
 #url = 'https://b24-002xma.bitrix24.ru/rest/1/ofz3113rxnyv8qfv/'
@@ -36,10 +37,10 @@ async def check_mail(client):
     imap.select("INBOX")
     result, data = imap.uid('search', None, "UNSEEN")
     if result == 'OK':
-        data = { 'order': { 'email': 'ghhv@mail.ru'}}
-        data = json.dumps(data)
-        response = await client.post("https://mdevelopeur.retailcrm.ru/api/v5/orders/create?apiKey=nHY0H7zd7UWwcEiwN0EbwhXz2eGY9o9G", data=data)
-        print(response)
+        #data = { 'order': { 'email': 'ghhv@mail.ru'}}
+        #data = json.dumps(data)
+        #response = await client.get("https://mdevelopeur.retailcrm.ru/api/v5/orders/create?apiKey=nHY0H7zd7UWwcEiwN0EbwhXz2eGY9o9G", data=data)
+        #print(response)
         for num in data[0].split():
             result, data = imap.uid('fetch', num, '(RFC822)')
             if result == 'OK':
@@ -48,6 +49,8 @@ async def check_mail(client):
                 print('To:' + email_message['To'])
                 print('Date:' + email_message['Date'])
                 print('Subject:' + str(email_message['Subject']))
+                response = await client.get(hook + '?Subject=' + email_message['Subject'] + '&email=' + email_message['From'])
+                print(response)
 
             
 
@@ -167,7 +170,7 @@ async def task(data, type, lead, start):
             tasks = [get_users(client) for i in range(1)]
         elif type == 'leads':
             tasks = [get_leads(client, start) for i in range(1)]
-        elif type == 'filter':
+        elif type == 'mail':
             tasks = [check_mail(client) for i in range(1)]
         result = await asyncio.gather(*tasks)
         return result
