@@ -49,7 +49,7 @@ async def check_mail(client):
                 print('To:' + email_message['To'])
                 print('Date:' + email_message['Date'])
                 print('Subject:' + str(email_message['Subject']))
-                response = await client.get(hook + '?Subject=' + email_message['Subject'] + '&email=' + email_message['From'])
+                #response = await client.get(hook + '?Subject=' + email_message['Subject'] + '&email=' + email_message['From'])
                 print(response)
     return None
 
