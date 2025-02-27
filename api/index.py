@@ -4,30 +4,14 @@ from time import time
 import httpx
 import asyncio
 import json
-import time
-from itertools import chain
-import imaplib
-import email
-from email.header import decode_header
-import base64
-from bs4 import BeautifulSoup
-import re
 
 app = FastAPI()
 
-#imap_ssl_host = 'imap.mail.ru'
-#imap_ssl_port = 993
-#username = 'dosmtv@mail.ru'
-#password = 'M3Eva6YCigJXNt0bZyGc'
-
-criteria = {}
-uid_max = 0
-
-
-
 hostName = "localhost"
 serverPort = 8080
-url = 'https://b24-002xma.bitrix24.ru/rest/1/g7hvqhdqpk69goyy/crm.lead.add.json'
+#url = 'https://b24-002xma.bitrix24.ru/rest/1/ofz3113rxnyv8qfv/'
+
+url = 'https://b24-mhfw1p.bitrix24.ru/rest/1/etnwm06bccntmdyo/'
 
 headers = {
   'Accept' : 'application/json',
@@ -52,14 +36,12 @@ async def get_body(request: Request):
     return await request.json()
 
 async def get_users(client):
-    response = await client.get(url + 'users', headers=headers)
+    response = await client.post(url + 'user.get.json', headers=headers)
     response_content = response.content
     print(f"Response content: {response_content}")
-
     if response.status_code != 200:
         print(f"Error: {response.status_code}")
         return None
-
     try:
         return response.json()
     except json.JSONDecodeError:
@@ -67,27 +49,32 @@ async def get_users(client):
         return None
 
 async def check_lead(client, name):
-    response = await client.get(url + 'leads?filter[name]=' + name, headers=headers)
+    data = {
+       'filter'  : {'=TITLE' : name}
+    }
+    data = json.dumps(data)
+    response = await client.post(url + 'crm.lead.list.json', headers=headers, data=data)
     response_content = response.content
     print(f"Response content: {response_content}")
-
     if response.status_code == 204:
         return response.status_code
-
     try:
         return response.json()
     except json.JSONDecodeError:
         print("Failed to decode JSON response")
         return None
 
-async def get_leads(client, page):
-    response = await client.get(url + 'leads?page=' + page + '&limit=250', headers=headers)
+async def get_leads(client, start):
+    data = {
+       'start' : start, 
+       'select' : ['TITLE','UF_CRM_URL', 'ASSIGNED_BY_ID', 'COMMENTS', 'DATE_CREATE', 'DATE_MODIFY', 'STAGE_ID']
+    }
+    data = json.dumps(data)
+    response = await client.post(url + 'crm.deal.list.json', headers=headers, data=data)
     response_content = response.content
     print(f"Response content: {response_content}")
-
     if response.status_code == 204:
         return response.status_code
-
     try:
         return response.json()
     except json.JSONDecodeError:
@@ -97,13 +84,20 @@ async def get_leads(client, page):
 async def post_lead(client, data):
     data = {
        'fields': {
-              'TITLE': data.name
-       }
+              'TITLE': data.name.replace('На карте', ''),
+              'ASSIGNED_BY_ID': data.user_id,
+                #'ADDRESS': data.address.replace('На карте', ''),  
+                'UF_CRM_PRICE' : data.price,
+                 'CATEGORY_ID': 0,
+                    'UF_CRM_URL': data.link,
+                      'UF_CRM_SELLER': data.seller.replace('Автор объявления', ''),
+                        'OPPORTUNITY': int(round(data.price * 0.03)),
+                        'UF_CRM_PHONE': data.phone
+       },
+
     }
-    
     data = json.dumps(data)
-    print(data)
-    response = await client.post(url, headers=headers, data=data)
+    response = await client.post(url + 'crm.deal.add.json', headers=headers, data=data)
     response_content = response.content
     print(f"Response content: {response_content}")
     try:
@@ -115,18 +109,13 @@ async def post_lead(client, data):
 async def patch_lead(client, data):
     data = {
         'id': data.lead_id,
-        'responsible_user_id': data.user_id,
-        'custom_fields_values': [
-            {'field_id': 897351, 'values': [
-                {
-                    "value": None
-                }
-            ]
-            }  # Установка значения null для поля field_id: 897351
-        ]
+          'fields': {
+              'ASSIGNED_BY_ID': data.user_id,
+                'STATUS_DESCRIPTION': ''
+           }       
     }
-    data = "[" + json.dumps(data) + "]"
-    response = await client.patch(url + 'leads', headers=headers, data=data)
+    data = json.dumps(data)
+    response = await client.patch(url + 'crm.deal.update', headers=headers, data=data)
     response_content = response.content
     print(f"Response content: {response_content}")
     try:
@@ -135,7 +124,7 @@ async def patch_lead(client, data):
         print("Failed to decode JSON response")
         return None
 
-async def task(data, type, lead, page):
+async def task(data, type, lead, start):
     async with httpx.AsyncClient() as client:
         if data and data.lead_id:
             tasks = [patch_lead(client, data)]
@@ -144,11 +133,9 @@ async def task(data, type, lead, page):
         elif type == 'users':
             tasks = [get_users(client) for i in range(1)]
         elif type == 'leads':
-            tasks = [get_leads(client, page) for i in range(1)]
+            tasks = [get_leads(client, start) for i in range(1)]
         elif type == 'filter':
-            print("hello")
-        elif type == 'mail':
-            print("hello")
+            tasks = [check_lead(client, lead) for i in range(1)]
         result = await asyncio.gather(*tasks)
         return result
 
@@ -162,9 +149,8 @@ async def handle_request(request: Request):
     return output
 
 @app.get('/api')
-async def users(type: str | None = None, lead: str | None = None, page: str | None = None):
-    start = time()
-    print('started')
-    output = await task(None, type, lead, page)
-    print("time: ", time() - start)
+async def users(type: str | None = None, lead: str | None = None, start: str | None = None):
+    #start = time()
+    output = await task(None, type, lead, start)
+    #print("time: ", time() - start)
     return output
