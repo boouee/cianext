@@ -26,7 +26,13 @@ def search_string(uid_max, criteria):
     c = list(map(lambda t: (t[0], '"'+str(t[1])+'"'), criteria.items())) + [('UID', '%d:*' % (uid_max+1))]
     return '(%s)' % ' '.join(chain(*c))
 
-for uid in uids:
+def check_mail():
+    mail = imaplib.IMAP4_SSL(imap_ssl_host)
+    mail.login(username, password)
+    mail.select('inbox')
+    result, data = mail.uid('search', None, search_string(uid_max, criteria))
+    uids = [int(s) for s in data[0].split()]
+    for uid in uids:
         # Have to check again because Gmail sometimes does not obey UID criterion.
         if uid > uid_max:
             result, data = mail.uid('fetch', str(uid), '(RFC822)')
@@ -35,7 +41,7 @@ for uid in uids:
                     #message_from_string can also be use here
                     print(email.message_from_bytes(response_part[1])) #processing the email here for whatever
             uid_max = uid
-mail.logout()
+    mail.logout()
 
 hostName = "localhost"
 serverPort = 8080
@@ -158,7 +164,9 @@ async def task(data, type, lead, page):
         elif type == 'leads':
             tasks = [get_leads(client, page) for i in range(1)]
         elif type == 'filter':
-            tasks = [check_lead(client, lead) for i in range(1)]
+            check_mail()
+        elif type == 'mail':
+            tasks = 
         result = await asyncio.gather(*tasks)
         return result
 
