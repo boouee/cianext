@@ -37,7 +37,6 @@ async def check_mail(client):
     result, data = imap.uid('search', None, "UNSEEN")
     if result == 'OK':
         response = await client.post("https://mdevelopeur.retailcrm.ru/api/v5/orders/create?apiKey=nHY0H7zd7UWwcEiwN0EbwhXz2eGY9o9G",
-    data={"order": "value"},
     headers={"Content-Type": "application/x-www-form-urlencoded"},
 )
         for num in data[0].split():
