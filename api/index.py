@@ -4,6 +4,12 @@ from time import time
 import httpx
 import asyncio
 import json
+import imaplib
+import email
+from email.header import decode_header
+import base64
+#from bs4 import BeautifulSoup
+import re
 
 app = FastAPI()
 
@@ -17,6 +23,12 @@ headers = {
   'Accept' : 'application/json',
   'Content-Type': 'application/json'
 }
+
+password = "M3Eva6YCigJXNt0bZyGc"
+username = "dosmtv@mail.ru"
+imap_server = "imap.mail.ru"
+imap = imaplib.IMAP4_SSL(imap_server)
+imap.login(username, password)
 
 # Глобальная переменная для pipeline_id
 pipeline_id = 8412118
