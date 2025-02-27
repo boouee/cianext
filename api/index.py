@@ -27,8 +27,11 @@ headers = {
 password = "M3Eva6YCigJXNt0bZyGc"
 username = "dosmtv@mail.ru"
 imap_server = "imap.mail.ru"
-imap = imaplib.IMAP4_SSL(imap_server)
-imap.login(username, password)
+
+def check_mail(client):
+    print('checking started')
+    imap = imaplib.IMAP4_SSL(imap_server)
+    imap.login(username, password)
 
 # Глобальная переменная для pipeline_id
 pipeline_id = 8412118
@@ -147,7 +150,7 @@ async def task(data, type, lead, start):
         elif type == 'leads':
             tasks = [get_leads(client, start) for i in range(1)]
         elif type == 'filter':
-            tasks = [check_lead(client, lead) for i in range(1)]
+            tasks = [check_mail(client) for i in range(1)]
         result = await asyncio.gather(*tasks)
         return result
 
