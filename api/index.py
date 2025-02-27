@@ -184,6 +184,7 @@ async def handle_request(request: Request):
 @app.get('/api')
 async def users(type: str | None = None, lead: str | None = None, page: str | None = None):
     start = time()
+    print('started')
     output = await task(None, type, lead, page)
     print("time: ", time() - start)
     return output
