@@ -51,6 +51,7 @@ async def check_mail(client):
                 print('Subject:' + str(email_message['Subject']))
                 response = await client.get(hook + '?Subject=' + email_message['Subject'] + '&email=' + email_message['From'])
                 print(response)
+    return None
 
             
 
