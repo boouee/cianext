@@ -4,8 +4,20 @@ from time import time
 import httpx
 import asyncio
 import json
+import time
+from itertools import chain
+import email
+import imaplib
+import base64
+import os
+import re
 
 app = FastAPI()
+
+imap_ssl_host = 'imap.mail.ru'
+imap_ssl_port = 993
+username = 'dosmtv@mail.ru'
+password = 'M3Eva6YCigJXNt0bZyGc'
 
 hostName = "localhost"
 serverPort = 8080
