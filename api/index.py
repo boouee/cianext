@@ -9,7 +9,7 @@ app = FastAPI()
 
 hostName = "localhost"
 serverPort = 8080
-url = 'https://b24-002xma.bitrix24.ru/rest/1/g7hvqhdqpk69goyy/crm.lead.add.json'
+#url = 'https://b24-002xma.bitrix24.ru/rest/1/g7hvqhdqpk69goyy/crm.lead.add.json'
 
 headers = {
   'Accept' : 'application/json',
