@@ -34,8 +34,17 @@ def check_mail(client):
     print(imap)
     print(imap.login(username, password))
     imap.select("INBOX")
-    print(imap.sort('DATE', 'UTF-8', 'ALL'))
-  
+    result, data = imap.uid('search', None, "UNSEEN")
+    if result == 'OK':
+        for num in data[0].split():
+            result, data = imap.uid('fetch', num, '(RFC822)')
+            if result == 'OK':
+                email_message = email.message_from_bytes(data[0][1])
+                print('From:' + email_message['From'])
+                print('To:' + email_message['To'])
+                print('Date:' + email_message['Date'])
+                print('Subject:' + str(email_message['Subject']))
+            
 
 # Глобальная переменная для pipeline_id
 pipeline_id = 8412118
