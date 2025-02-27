@@ -31,7 +31,9 @@ imap_server = "imap.mail.ru"
 def check_mail(client):
     print('checking started')
     imap = imaplib.IMAP4_SSL(imap_server)
-    imap.login(username, password)
+    print(imap)
+    print(imap.login(username, password))
+  
 
 # Глобальная переменная для pipeline_id
 pipeline_id = 8412118
