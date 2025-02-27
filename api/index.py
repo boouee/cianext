@@ -34,7 +34,7 @@ def check_mail(client):
     print(imap)
     print(imap.login(username, password))
     imap.select("INBOX")
-    print(imap.sort('DATE', 'UTF-8', 'ALL')
+    print(imap.sort('DATE', 'UTF-8', 'ALL'))
   
 
 # Глобальная переменная для pipeline_id
