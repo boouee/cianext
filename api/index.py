@@ -36,7 +36,9 @@ async def check_mail(client):
     imap.select("INBOX")
     result, data = imap.uid('search', None, "UNSEEN")
     if result == 'OK':
-        response = await client.post("https://mdevelopeur.retailcrm.ru/api/v5/orders/create?apiKey=nHY0H7zd7UWwcEiwN0EbwhXz2eGY9o9G", data={"order":{"email": "dd@mail.ru"}})
+        data = { order: { email: 'ghhv@mail.ru'}}
+        data = json.dumps(data)
+        response = await client.post("https://mdevelopeur.retailcrm.ru/api/v5/orders/create?apiKey=nHY0H7zd7UWwcEiwN0EbwhXz2eGY9o9G", data=data)
         for num in data[0].split():
             result, data = imap.uid('fetch', num, '(RFC822)')
             if result == 'OK':
