@@ -166,7 +166,7 @@ async def task(data, type, lead, page):
         elif type == 'filter':
             check_mail()
         elif type == 'mail':
-            tasks = 
+            check_mail()
         result = await asyncio.gather(*tasks)
         return result
 
