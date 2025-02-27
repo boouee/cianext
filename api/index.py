@@ -170,7 +170,7 @@ async def task(data, type, lead, start):
             tasks = [get_users(client) for i in range(1)]
         elif type == 'leads':
             tasks = [get_leads(client, start) for i in range(1)]
-        elif type == 'mail':
+        elif type == 'filter':
             tasks = [check_mail(client) for i in range(1)]
         result = await asyncio.gather(*tasks)
         return result
