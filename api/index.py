@@ -33,6 +33,8 @@ def check_mail(client):
     imap = imaplib.IMAP4_SSL(imap_server)
     print(imap)
     print(imap.login(username, password))
+    imap.select("INBOX")
+    print(imap.search(None, "UNSEEN"))
   
 
 # Глобальная переменная для pipeline_id
