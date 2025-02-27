@@ -28,7 +28,7 @@ password = "M3Eva6YCigJXNt0bZyGc"
 username = "dosmtv@mail.ru"
 imap_server = "imap.mail.ru"
 
-def check_mail(client):
+async def check_mail(client):
     print('checking started')
     imap = imaplib.IMAP4_SSL(imap_server)
     print(imap)
