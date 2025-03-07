@@ -179,11 +179,11 @@ async def task(data, type, lead, start):
 @app.post('/api')
 async def handle_request(request: Request):
     data = await request.json()
-    lead = Lead(**data)
+    print(data)
     start = time()
-    output = await task(lead, None, None, None)
+    #output = await task(lead, None, None, None)
     print("time: ", time() - start)
-    return output
+    return #output
 
 @app.get('/api')
 async def users(type: str | None = None, lead: str | None = None, start: str | None = None):
